@@ -1,0 +1,98 @@
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Hash import SHA256
+import custom_base64
+import traceback
+
+def rsaEncryptionOaepSha256ToBase64(message):
+  rsaPublicKey = RSA.import_key(loadRsaPublicKeyPem())  
+  cipher = PKCS1_OAEP.new(rsaPublicKey, SHA256)
+  ciphertext = cipher.encrypt(message)
+  return custom_base64.base64Encoding(ciphertext)
+
+def rsaDecryptionOaepSha256FromBase64(ciphertextBase64):
+  rsaPrivateKey = RSA.import_key(loadRsaPrivateKeyPem())
+  ciphertextBytes = custom_base64.base64Decoding(ciphertextBase64)
+  cipher = PKCS1_OAEP.new(rsaPrivateKey, SHA256)
+  try:
+    message = cipher.decrypt(ciphertextBytes)
+    return message
+  except (ValueError):    
+    print(traceback.format_exc())
+    return ""
+
+# ATENÇÃO: Chaves inseridas diretamente no código para fins de demonstração. 
+## Por uma questão de gestão, a chave deve ser gravada em um ficheiro separado.
+## A chave privada de produção não será disponibilizada.
+
+def loadRsaPrivateKeyPem():
+  return """-----BEGIN PRIVATE KEY-----
+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
+g4ZBA9KDwbe3hYjngteeBDjXVhN0PiU=
+-----END PRIVATE KEY-----
+"""
+
+def loadRsaPublicKeyPem():
+  return """-----BEGIN PUBLIC KEY-----
+MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAy8G4nHV34xS4MzlYn/cl
+c7XU+gYnt7J7gK6huySeB97lDK791Zz7bOE2ZoAG13nbkUeESJMt77AUwCQpBd/k
+3gRNHLfWLYOgFfQ5D97pueG67f7uNr9Rb/cjmO87+aT/wf/gYJMJo1vGxw9Hth7Y
+ziZiXkwZXnET9ND1v8zggEbOzDrLkamMjfWqe8newjNrSYoBFBQVrB0d3FUt1r/n
+loyMk6cSGbTMMPl5Vga0e6jOJ/8phuw/kn9bbAr0ecQsIUK5jL2OwKFL4fc+eys/
+fpsv8B1AfLc9YmAJwTEoXhPrO+3ERloWZcJSQfXYgEYaMLsD0vXo3YxVVuYSr/JZ
+k0zl/zNbUPRmeMm+IZ5uhD1lxo+Hl35P1SBST2XRKZwjxUVJpgxF3t4ejpQNhcz6
+1FR8hJ3yc92psn2+JjxOI3ssZ3PVav6xVINpP9KScfxuEfMXM7rf3fc4gAG4TS24
+hutACVBPYE/ATlv5+lzC5fdJfwYN0vai4T/OrqK0MvSH7YhmmEEN6HaINwdnyuZm
+ilfulfVDYCZm4bCktlb631z5T46eS+VVBoB11C4EW+BJONwpBl5rKFfUZ0bcw80I
+2npYiQV/E8/vIM2LBDi/ZBqcZDuhiiMT7G8GkPHJyZirOYf/ugX26pzuBc3O2LCc
+Q5+rYmfO5X+ui9rUIzJiAy0CAwEAAQ==
+-----END PUBLIC KEY-----
+"""
